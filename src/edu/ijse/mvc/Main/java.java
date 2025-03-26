@@ -4,6 +4,8 @@
  */
 package edu.ijse.mvc.Main;
 
+import edu.ijse.mvc.view.ViewItem;
+
 /**
  *
  * @author Chirath
@@ -14,7 +16,7 @@ public class java {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        System.out.println("Hello");
+        new ViewItem().setVisible(true);
     }
     
 }

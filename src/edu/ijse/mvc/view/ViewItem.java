@@ -206,11 +206,11 @@ public class ViewItem extends javax.swing.JFrame {
     }//GEN-LAST:event_saveBtnActionPerformed
 
     private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
-        // TODO add your handling code here:
+        deleteItem();
     }//GEN-LAST:event_deleteBtnActionPerformed
 
     private void updateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateBtnActionPerformed
-        // TODO add your handling code here:
+        updateItem();
     }//GEN-LAST:event_updateBtnActionPerformed
 
     /**
@@ -281,5 +281,33 @@ public class ViewItem extends javax.swing.JFrame {
         packSizeTxt.setText("");
         qohTxt.setText("");
         uPriceTxt.setText("");
+    }
+
+    private void deleteItem() {
+        String itemCode = codeTxt.getText();
+        
+        try {
+            String respond = itemController.deleteItem(itemCode);
+            JOptionPane.showMessageDialog(this, respond);
+            loadTable();
+            clearForm();
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+   }
+
+    private void updateItem() {
+        ItemDto itemDto = new ItemDto(codeTxt.getText(), descTxt.getText(), packSizeTxt.getText(), Integer.parseInt(qohTxt.getText()), Double.parseDouble(uPriceTxt.getText()));
+        
+        try {
+            String respond = itemController.updateItem(itemDto);
+            JOptionPane.showMessageDialog(this, respond);
+            loadTable();
+            clearForm();
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
     }
 }

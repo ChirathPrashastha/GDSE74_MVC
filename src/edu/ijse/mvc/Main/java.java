@@ -4,6 +4,7 @@
  */
 package edu.ijse.mvc.Main;
 
+import edu.ijse.mvc.view.ViewCustomer;
 import edu.ijse.mvc.view.ViewItem;
 
 /**
@@ -16,7 +17,8 @@ public class java {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        new ViewItem().setVisible(true);
+        //new ViewItem().setVisible(true);
+        new ViewCustomer().setVisible(true);
     }
     
 }

@@ -6,6 +6,7 @@ package edu.ijse.mvc.Main;
 
 import edu.ijse.mvc.view.ViewCustomer;
 import edu.ijse.mvc.view.ViewItem;
+import edu.ijse.mvc.view.ViewOrder;
 
 /**
  *
@@ -19,6 +20,7 @@ public class java {
     public static void main(String[] args) {
         //new ViewItem().setVisible(true);
         new ViewCustomer().setVisible(true);
+        //new ViewOrder().setVisible(true);
     }
     
 }

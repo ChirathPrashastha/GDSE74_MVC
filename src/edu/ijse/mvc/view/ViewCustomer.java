@@ -16,6 +16,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class ViewCustomer extends javax.swing.JFrame {
     
+    DefaultTableModel dtm;
     CustomerController customerController;
 
     /**
@@ -62,6 +63,7 @@ public class ViewCustomer extends javax.swing.JFrame {
         updateBtn = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         customerTbl = new javax.swing.JTable();
+        searchBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -153,6 +155,14 @@ public class ViewCustomer extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(customerTbl);
 
+        searchBtn.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        searchBtn.setText("Search");
+        searchBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -165,13 +175,15 @@ public class ViewCustomer extends javax.swing.JFrame {
                 .addGap(28, 28, 28)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(searchBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(updateBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(deleteBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(addBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 644, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 644, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(layout.createSequentialGroup()
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(dobLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -254,10 +266,11 @@ public class ViewCustomer extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(addBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(deleteBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(updateBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(updateBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(searchBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(10, 10, 10))
+                .addGap(59, 59, 59))
         );
 
         pack();
@@ -274,6 +287,10 @@ public class ViewCustomer extends javax.swing.JFrame {
     private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
         addCustomer();
     }//GEN-LAST:event_addBtnActionPerformed
+
+    private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
+        searchCustomer();
+    }//GEN-LAST:event_searchBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -304,18 +321,19 @@ public class ViewCustomer extends javax.swing.JFrame {
     private javax.swing.JTextField provinceTxt;
     private javax.swing.JLabel salaryLbl;
     private javax.swing.JTextField salaryTxt;
+    private javax.swing.JButton searchBtn;
     private javax.swing.JButton updateBtn;
     // End of variables declaration//GEN-END:variables
 
     private void loadTable() {
         String[] columns = {"CustID","CustTitle","CustName","DOB","salary","CustAddress","City","Province","PostalCode"};
-        DefaultTableModel dtm = new DefaultTableModel(columns,0);
+        dtm = new DefaultTableModel(columns,0);
         customerTbl.setModel(dtm);
         
         try {
             ArrayList<CustomerDto> CustomerDtos = customerController.viewAllCustomer();
             for(CustomerDto dto : CustomerDtos){
-                Object[] rawData = {dto.getCustID(),dto.getCustTitle(),dto.getCustName(),dto.getDob(),dto.getCustAddresss(),dto.getCity(),dto.getProvince(),dto.getPostalCode()};
+                Object[] rawData = {dto.getCustID(),dto.getCustTitle(),dto.getCustName(),dto.getDob(),dto.getSalary(),dto.getCustAddresss(),dto.getCity(),dto.getProvince(),dto.getPostalCode()};
                 dtm.addRow(rawData);
             }
         } catch (Exception e) {
@@ -371,6 +389,21 @@ public class ViewCustomer extends javax.swing.JFrame {
             String respond = customerController.updateCustomer(customerDto);
             JOptionPane.showMessageDialog(this, respond);
             loadTable();
+            clearForm();
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+    }
+
+    private void searchCustomer() {
+        
+        try {
+            CustomerDto customerDto = customerController.searchCustomer(custIdTxt.getText());
+            dtm.setRowCount(0);
+            Object[] rawData = {customerDto.getCustID(),customerDto.getCustTitle(),customerDto.getCustName(),customerDto.getDob(),customerDto.getSalary(),customerDto.getCustAddresss(),customerDto.getCity(),customerDto.getProvince(),customerDto.getPostalCode()};
+            dtm.addRow(rawData);
+            customerTbl.setModel(dtm);
             clearForm();
         } catch (Exception e) {
             e.printStackTrace();

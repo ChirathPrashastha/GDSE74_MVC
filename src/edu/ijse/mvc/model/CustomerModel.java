@@ -49,19 +49,20 @@ public class CustomerModel {
     
     public String updateCustomer(CustomerDto customerDto)throws ClassNotFoundException, SQLException{
         Connection connection = DBConnection.getInstance().getConnection();
-        String sql = "UPDATE customer SET CustID = ? , CustTitle = ? , CustName = ? , DOB = ? , salary = ? , CustAddress = ? , City = ? , Province = ? , PostalCode = ?";
+        String sql = "UPDATE customer SET CustTitle = ? , CustName = ? , DOB = ? , salary = ? , CustAddress = ? , City = ? , Province = ? , PostalCode = ? WHERE CustID = ?";
         
         PreparedStatement statement = connection.prepareStatement(sql);
         
-        statement.setString(1, customerDto.getCustID());
-        statement.setString(2, customerDto.getCustTitle());
-        statement.setString(3, customerDto.getCustName());
-        statement.setString(4, customerDto.getDob());
-        statement.setDouble(5, customerDto.getSalary());
-        statement.setString(6, customerDto.getCustAddresss());
-        statement.setString(7, customerDto.getCity());
-        statement.setString(8, customerDto.getProvince());
-        statement.setInt(9, customerDto.getPostalCode());
+        
+        statement.setString(1, customerDto.getCustTitle());
+        statement.setString(2, customerDto.getCustName());
+        statement.setString(3, customerDto.getDob());
+        statement.setDouble(4, customerDto.getSalary());
+        statement.setString(5, customerDto.getCustAddresss());
+        statement.setString(6, customerDto.getCity());
+        statement.setString(7, customerDto.getProvince());
+        statement.setInt(8, customerDto.getPostalCode());
+        statement.setString(9, customerDto.getCustID());
         
         return statement.executeUpdate() > 0 ? "Customer Updated Successfully" : "Failed to Update Customer";
     }

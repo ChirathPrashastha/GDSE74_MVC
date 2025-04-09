@@ -19,8 +19,8 @@ public class java {
      */
     public static void main(String[] args) {
         //new ViewItem().setVisible(true);
-        new ViewCustomer().setVisible(true);
-        //new ViewOrder().setVisible(true);
+        //new ViewCustomer().setVisible(true);
+        new ViewOrder().setVisible(true);
     }
     
 }

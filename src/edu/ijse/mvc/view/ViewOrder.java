@@ -4,9 +4,16 @@
  */
 package edu.ijse.mvc.view;
 
+import edu.ijse.mvc.Controller.CustomerController;
+import edu.ijse.mvc.Controller.ItemController;
 import edu.ijse.mvc.Controller.OrderController;
+import edu.ijse.mvc.dto.CustomerDto;
+import edu.ijse.mvc.dto.ItemDto;
+import edu.ijse.mvc.dto.OrderDetailDto;
 import edu.ijse.mvc.dto.OrderDto;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -15,14 +22,18 @@ import javax.swing.table.DefaultTableModel;
  * @author Chirath
  */
 public class ViewOrder extends javax.swing.JFrame {
-    
+    ArrayList<OrderDetailDto> orderDetailsArray = new ArrayList<>();
     OrderController orderController;
+    ItemController itemController;
+    CustomerController customerController;
 
     /**
      * Creates new form ViewOrder
      */
     public ViewOrder() {
         orderController = new OrderController();
+        itemController = new ItemController();
+        customerController = new CustomerController();
         initComponents();
         loadTable();
     }
@@ -39,15 +50,22 @@ public class ViewOrder extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         orderIdLbl = new javax.swing.JLabel();
         orderIdTxt = new javax.swing.JTextField();
-        orderDateTxt = new javax.swing.JTextField();
-        orderDateLbl = new javax.swing.JLabel();
         custIdTxt = new javax.swing.JTextField();
         custIdLbl = new javax.swing.JLabel();
         addBtn = new javax.swing.JButton();
-        deleteBtn = new javax.swing.JButton();
-        updateBtn = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         orderTbl = new javax.swing.JTable();
+        custIdLbl1 = new javax.swing.JLabel();
+        itemIdTxt = new javax.swing.JTextField();
+        customerSearchBtn = new javax.swing.JButton();
+        itemSearchBtn = new javax.swing.JButton();
+        custTxt = new javax.swing.JLabel();
+        itemTxt = new javax.swing.JLabel();
+        custIdLbl2 = new javax.swing.JLabel();
+        qtyTxt = new javax.swing.JTextField();
+        custIdLbl3 = new javax.swing.JLabel();
+        discountTxt = new javax.swing.JTextField();
+        placeOrderBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -61,11 +79,6 @@ public class ViewOrder extends javax.swing.JFrame {
 
         orderIdTxt.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
-        orderDateTxt.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-
-        orderDateLbl.setFont(new java.awt.Font("Trebuchet MS", 1, 15)); // NOI18N
-        orderDateLbl.setText("Order  Date");
-
         custIdTxt.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         custIdLbl.setFont(new java.awt.Font("Trebuchet MS", 1, 15)); // NOI18N
@@ -76,22 +89,6 @@ public class ViewOrder extends javax.swing.JFrame {
         addBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addBtnActionPerformed(evt);
-            }
-        });
-
-        deleteBtn.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        deleteBtn.setText("Delete");
-        deleteBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                deleteBtnActionPerformed(evt);
-            }
-        });
-
-        updateBtn.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        updateBtn.setText("Update");
-        updateBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                updateBtnActionPerformed(evt);
             }
         });
 
@@ -108,36 +105,90 @@ public class ViewOrder extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(orderTbl);
 
+        custIdLbl1.setFont(new java.awt.Font("Trebuchet MS", 1, 15)); // NOI18N
+        custIdLbl1.setText("Item ID");
+
+        itemIdTxt.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        customerSearchBtn.setText("Search");
+        customerSearchBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                customerSearchBtnActionPerformed(evt);
+            }
+        });
+
+        itemSearchBtn.setText("Search");
+        itemSearchBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemSearchBtnActionPerformed(evt);
+            }
+        });
+
+        custIdLbl2.setFont(new java.awt.Font("Trebuchet MS", 1, 15)); // NOI18N
+        custIdLbl2.setText("QTY");
+
+        qtyTxt.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        custIdLbl3.setFont(new java.awt.Font("Trebuchet MS", 1, 15)); // NOI18N
+        custIdLbl3.setText("Discount");
+
+        discountTxt.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        placeOrderBtn.setFont(new java.awt.Font("Segoe UI Emoji", 1, 12)); // NOI18N
+        placeOrderBtn.setText("Place Order");
+        placeOrderBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                placeOrderBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(updateBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(deleteBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(addBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(42, 42, 42))
             .addGroup(layout.createSequentialGroup()
                 .addGap(25, 25, 25)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 662, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(orderIdLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(orderIdTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(orderIdTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(orderDateLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(orderDateTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(custIdLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(custIdTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(customerSearchBtn))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(custIdLbl1, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(itemIdTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(itemSearchBtn)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(itemTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)
+                            .addComponent(custTxt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(151, 151, 151))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(custIdLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(custIdTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(24, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(addBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(custIdLbl2, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(qtyTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(custIdLbl3, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(discountTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 662, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(placeOrderBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 216, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -147,38 +198,59 @@ public class ViewOrder extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(orderIdLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(orderIdTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 39, Short.MAX_VALUE))
+                .addGap(75, 75, 75)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(custIdTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 42, Short.MAX_VALUE)
+                                        .addComponent(customerSearchBtn))
+                                    .addComponent(custIdLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(custIdLbl1, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(itemTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(itemIdTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(itemSearchBtn))))
+                            .addComponent(custTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(qtyTxt)
+                            .addComponent(custIdLbl2, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(discountTxt)
+                        .addComponent(custIdLbl3, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(orderDateLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(orderDateTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 39, Short.MAX_VALUE))
+                .addComponent(addBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(custIdLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(custIdTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 39, Short.MAX_VALUE))
-                .addGap(25, 25, 25)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(addBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(deleteBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(updateBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(27, 27, 27)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(placeOrderBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(20, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
-        deleteOrder();
-    }//GEN-LAST:event_deleteBtnActionPerformed
-
-    private void updateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateBtnActionPerformed
-        updateOrder();
-    }//GEN-LAST:event_updateBtnActionPerformed
-
     private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
-        addOrder();
+        addToTable();
+        clearFields();
     }//GEN-LAST:event_addBtnActionPerformed
+
+    private void customerSearchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_customerSearchBtnActionPerformed
+       searchCustDetails();
+    }//GEN-LAST:event_customerSearchBtnActionPerformed
+
+    private void itemSearchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemSearchBtnActionPerformed
+        searchItemDetails();
+    }//GEN-LAST:event_itemSearchBtnActionPerformed
+
+    private void placeOrderBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_placeOrderBtnActionPerformed
+        placeOrder();
+    }//GEN-LAST:event_placeOrderBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -188,81 +260,117 @@ public class ViewOrder extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addBtn;
     private javax.swing.JLabel custIdLbl;
+    private javax.swing.JLabel custIdLbl1;
+    private javax.swing.JLabel custIdLbl2;
+    private javax.swing.JLabel custIdLbl3;
     private javax.swing.JTextField custIdTxt;
-    private javax.swing.JButton deleteBtn;
+    private javax.swing.JLabel custTxt;
+    private javax.swing.JButton customerSearchBtn;
+    private javax.swing.JTextField discountTxt;
+    private javax.swing.JTextField itemIdTxt;
+    private javax.swing.JButton itemSearchBtn;
+    private javax.swing.JLabel itemTxt;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel orderDateLbl;
-    private javax.swing.JTextField orderDateTxt;
     private javax.swing.JLabel orderIdLbl;
     private javax.swing.JTextField orderIdTxt;
     private javax.swing.JTable orderTbl;
-    private javax.swing.JButton updateBtn;
+    private javax.swing.JButton placeOrderBtn;
+    private javax.swing.JTextField qtyTxt;
     // End of variables declaration//GEN-END:variables
 
     private void loadTable() {
-        String[] columns = {"OrderID", "OrderDate", "CustID"};
+        String[] columns = {"ItemID", "QTY", "Discount"};
         
         DefaultTableModel dtm = new DefaultTableModel(columns, 0);
         orderTbl.setModel(dtm);
         
-        try {
-            ArrayList<OrderDto> orderDtos = orderController.viewAllOrders();
-            for(OrderDto dto : orderDtos){
-                Object[] rawData = {dto.getOrderID(), dto.getOrderDate(), dto.getCustID()};
-                dtm.addRow(rawData);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, e.getMessage());
-        }
+    }
+    
+    private void addToTable(){
+        DefaultTableModel dtm = (DefaultTableModel) orderTbl.getModel();
+        Object[] rawData = {itemIdTxt.getText(), qtyTxt.getText(), discountTxt.getText()};
+        dtm.addRow(rawData);
+        
+        OrderDetailDto dto = new OrderDetailDto(orderIdTxt.getText(), itemIdTxt.getText(), Integer.parseInt(qtyTxt.getText()), discountTxt.getText());
+        orderDetailsArray.add(dto);
     }
     
     private void clearFields(){
         orderIdTxt.setText("");
-        orderDateTxt.setText("");
+        itemIdTxt.setText("");
         custIdTxt.setText("");
+        qtyTxt.setText("");
+        discountTxt.setText("");
     }
 
-    private void addOrder() {
-        OrderDto orderDto = new OrderDto(orderIdTxt.getText(), orderDateTxt.getText(), custIdTxt.getText());
+//    private void addOrder() {
+//        OrderDto orderDto = new OrderDto(orderIdTxt.getText(), orderDateTxt.getText(), custIdTxt.getText());
+//        
+//        try {
+//            String respond = orderController.addOrder(orderDto);
+//            JOptionPane.showMessageDialog(this, respond);
+//            clearFields();
+//            loadTable();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            JOptionPane.showMessageDialog(this, e.getMessage());
+//        }
+//    }
+
+//    private void updateOrder() {
+//        OrderDto orderDto = new OrderDto(orderIdTxt.getText(), orderDateTxt.getText(), custIdTxt.getText());
+//        
+//        try {
+//            String respond = orderController.updateOrder(orderDto);
+//            JOptionPane.showMessageDialog(this, respond);
+//            clearFields();
+//            loadTable();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            JOptionPane.showMessageDialog(this, e.getMessage());
+//        }
+//    }
+
+    private void searchItemDetails() {
+        try{
+            ItemDto itemDto = itemController.searchItem(itemIdTxt.getText());
+            String details = itemDto.getDescription() + itemDto.getPackSize();
+            itemTxt.setText(details);
         
+        }catch(Exception e){
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+    }
+
+    private void searchCustDetails() {
         try {
-            String respond = orderController.addOrder(orderDto);
-            JOptionPane.showMessageDialog(this, respond);
-            clearFields();
-            loadTable();
+            CustomerDto customerDto = customerController.searchCustomer(custIdTxt.getText());
+            String details = customerDto.getCustTitle() + customerDto.getCustName();
+            custTxt.setText(details);
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, e.getMessage());
         }
     }
 
-    private void deleteOrder() {
-        String orderId = orderIdTxt.getText();
+    private void placeOrder() {
+        OrderDto orderDto = new OrderDto();
+        orderDto.setOrderID(orderIdTxt.getText());
+        orderDto.setCustID(custIdTxt.getText());
+        
+        Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String sDate = sdf.format(date);
+        
+        orderDto.setOrderDate(sDate);
         
         try {
-            String respond = orderController.deleteOrder(orderId);
-            JOptionPane.showMessageDialog(this, respond);
-            clearFields();
-            loadTable();
+            String resp = orderController.placeOrder(orderDto, orderDetailsArray);
+            JOptionPane.showMessageDialog(this, resp);
         } catch (Exception e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(this, e.getMessage());
-        }
-    }
-
-    private void updateOrder() {
-        OrderDto orderDto = new OrderDto(orderIdTxt.getText(), orderDateTxt.getText(), custIdTxt.getText());
-        
-        try {
-            String respond = orderController.updateOrder(orderDto);
-            JOptionPane.showMessageDialog(this, respond);
-            clearFields();
-            loadTable();
-        } catch (Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, e.getMessage());
         }
     }
 }
